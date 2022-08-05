@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
+
+import { useSelector, useDispatch } from "react-redux/es/exports";
+import { signInAPI } from "./../redux/action/userAction";
 
 const Container = styled.div`
   padding: 0;
@@ -29,7 +32,7 @@ const Nav = styled.nav`
   }
 `;
 
-const Join = styled(Link)`
+const Join = styled.a`
   font-size: 16px;
   padding: 10px 12px;
   color: rgba(0, 0, 0, 0.6);
@@ -149,7 +152,8 @@ const Google = styled.button`
   }
 `;
 
-const Login = () => {
+const Login = (props) => {
+  const dispatch = useDispatch();
   return (
     <Container>
       <Nav>
@@ -157,7 +161,7 @@ const Login = () => {
           <img src="/images/login-logo.svg" alt="logo" />
         </a>
         <div>
-          <Join to={"/home"}>Join now</Join>
+          <Join>Join now</Join>
           <SignIn>Sign in</SignIn>
         </div>
       </Nav>
@@ -168,7 +172,7 @@ const Login = () => {
         </Hero>
 
         <Form>
-          <Google>
+          <Google onClick={() => dispatch(signInAPI())}>
             <img src="/images/google.svg" alt="google" />
             Sign in width google
           </Google>
