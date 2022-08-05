@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   padding: 0;
@@ -28,7 +29,7 @@ const Nav = styled.nav`
   }
 `;
 
-const Join = styled.a`
+const Join = styled(Link)`
   font-size: 16px;
   padding: 10px 12px;
   color: rgba(0, 0, 0, 0.6);
@@ -156,7 +157,7 @@ const Login = () => {
           <img src="/images/login-logo.svg" alt="logo" />
         </a>
         <div>
-          <Join>Join now</Join>
+          <Join to={"/home"}>Join now</Join>
           <SignIn>Sign in</SignIn>
         </div>
       </Nav>
