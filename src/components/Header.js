@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserAuth, signOutAPI } from "../redux/action/userAction";
 
 const Container = styled.div`
   width: 100%;
@@ -202,6 +204,14 @@ const RightMoblieNav = styled.div`
 `;
 
 const Header = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserAuth());
+  }, []);
+
+  const user = useSelector((state) => state.userState.user);
+
   return (
     <Container>
       <Content>
@@ -254,13 +264,18 @@ const Header = () => {
             </NavList>
             <User>
               <a>
-                <img src="/images/user.svg" alt="user" />
+                {user && user.photoURL ? (
+                  <img src={user.photoURL} alt="profile" />
+                ) : (
+                  <img src="/images/user.svg" alt="user" />
+                )}
+
                 <span>
                   Me
                   <img src="/images/down-icon.svg" alt="dropdown" />
                 </span>
               </a>
-              <SignOut>
+              <SignOut onClick={() => dispatch(signOutAPI())}>
                 <a>Sign out</a>
               </SignOut>
             </User>
@@ -278,7 +293,11 @@ const Header = () => {
         <RightMoblieNav>
           <User>
             <a>
-              <img src="/images/user.svg" alt="user" />
+              {user && user.photoURL ? (
+                <img src={user.photoURL} alt="profile" />
+              ) : (
+                <img src="/images/user.svg" alt="user" />
+              )}
               <span>
                 Me
                 <img src="/images/down-icon.svg" alt="dropdown" />

@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { useSelector, useDispatch } from "react-redux/es/exports";
 import { signInAPI } from "./../redux/action/userAction";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 const Container = styled.div`
   padding: 0;
@@ -154,8 +155,14 @@ const Google = styled.button`
 
 const Login = (props) => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.userState.user);
   return (
     <Container>
+      {user && (
+        <Routes>
+          <Route path="/*" element={<Navigate to={"/home"} />} />
+        </Routes>
+      )}
       <Nav>
         <a href="/">
           <img src="/images/login-logo.svg" alt="logo" />

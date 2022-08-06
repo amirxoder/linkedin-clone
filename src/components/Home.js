@@ -4,6 +4,8 @@ import Header from "./Header";
 import LeftSide from "./LeftSide";
 import RightSide from "./RightSide";
 import MianSide from "./MianSide";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   padding-top: 3rem;
@@ -66,10 +68,17 @@ const Layout = styled.div`
 `;
 
 const Home = () => {
+  const user = useSelector((state) => state.userState.user);
+  // const dispatch = useDispatch();
   return (
     <>
       <Header />
       <Container>
+        {!user && (
+          <Routes>
+            <Route path="/*" element={<Navigate to={"/"} />} />
+          </Routes>
+        )}
         <Content>
           <Section>
             <h5>

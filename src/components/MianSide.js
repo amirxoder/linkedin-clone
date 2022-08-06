@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PostModal from "./PostModal";
 
 const Container = styled.div`
   grid-area: main;
@@ -301,6 +302,7 @@ const MianSide = () => {
           </SocialActions>
         </Article>
       </div>
+      <PostModal />
     </Container>
   );
 };

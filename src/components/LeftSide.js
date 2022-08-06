@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserAuth } from "../redux/action/userAction";
 
 const Container = styled.div`
   grid-area: left;
@@ -34,14 +36,14 @@ const CardBackground = styled.div`
 
 const Photo = styled.div`
   box-shadow: none;
-  background-image: url("/images/photo.svg");
+  background-image: url(/images/photo.svg);
   width: 72px;
   height: 72px;
   background-clip: content-box;
   background-repeat: no-repeat;
   background-color: #fff;
   background-position: center;
-  background-size: 60%;
+  background-size: 100%;
   border: 2px solid #fff;
   margin: -38px auto 12px;
   border-radius: 50%;
@@ -149,6 +151,13 @@ const CommunityCard = styled(ArtCart)`
 `;
 
 const LeftSide = () => {
+  const user = useSelector((state) => state.userState.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserAuth());
+  }, []);
+
   return (
     <Container>
       <ArtCart>
@@ -156,7 +165,7 @@ const LeftSide = () => {
           <CardBackground />
           <a>
             <Photo />
-            <Link>Welcome, there!</Link>
+            <Link>Welcome, {user ? user.displayName : "there"}</Link>
           </a>
           <a>
             <AddPhotoText>Add a photo</AddPhotoText>
