@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PostModal from "./PostModal";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserAuth } from "./../redux/action/userAction";
+import { getArticlesAPI } from "./../redux/action/userAction";
+import ReactPlayer from "react-player";
 
 const Container = styled.div`
   grid-area: main;
+  .loading {
+    width: 30px;
+  }
 `;
 
 const CommonCard = styled.div`
@@ -211,9 +215,6 @@ const SocialActions = styled.div`
 
 const Content = styled.div`
   text-align: center;
-  .loading {
-    width: 30px;
-  }
 `;
 
 const MianSide = () => {
@@ -221,12 +222,14 @@ const MianSide = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getUserAuth());
-  }, []);
   const user = useSelector((state) => state.userState.user);
   const loading = useSelector((state) => state.articleState.loading);
+  const articles = useSelector((state) => state.articleState.articles);
+  console.log(articles);
   // console.log(loading);
+  useEffect(() => {
+    dispatch(getArticlesAPI());
+  }, []);
 
   const modalHandler = (e) => {
     e.preventDefault();
@@ -248,118 +251,146 @@ const MianSide = () => {
   };
 
   return (
-    <Container>
-      <ShareBox>
-        {}
-        <div>
-          {user && user.photoURL ? (
-            <img src={user.photoURL} alt="user" />
-          ) : (
-            <img src="/images/user.svg" alt="user" />
-          )}
-          <button onClick={modalHandler} disabled={loading ? true : false}>
-            Start a post
-          </button>
-        </div>
-        <div>
-          <button>
-            <box-icon name="photo-album" color="#70b5f9"></box-icon>
-            <span>Photo</span>
-          </button>
-
-          <button>
-            <box-icon type="solid" name="videos" color="green"></box-icon>
-            <span>Video</span>
-          </button>
-
-          <button>
-            <box-icon
-              name="calendar-event"
-              color="orange"
-              type="solid"
-            ></box-icon>
-            <span>Event</span>
-          </button>
-
-          <button>
-            <box-icon name="file" color="red"></box-icon>
-            <span>Write article</span>
-          </button>
-        </div>
-      </ShareBox>
-
-      <Content>
-        {loading && (
-          <img
-            className="loading"
-            src="https://i0.wp.com/css-tricks.com/wp-content/uploads/2021/08/s_2A9C470D38F43091CCD122E63014ED4503CAA7508FAF0C6806AE473C2B94B83E_1627522653545_loadinfo.gif?resize=200%2C200&ssl=1"
-            alt="loading"
-          />
-        )}
-        <Article>
-          <SharedActor>
-            <a>
+    <>
+      <Container>
+        <ShareBox>
+          {}
+          <div>
+            {user && user.photoURL ? (
+              <img src={user.photoURL} alt="user" />
+            ) : (
               <img src="/images/user.svg" alt="user" />
-              <div>
-                <span>Title</span>
-                <span>Info</span>
-                <span>Data</span>
-              </div>
-            </a>
-            <button>
-              <box-icon name="dots-horizontal-rounded"></box-icon>
+            )}
+            <button onClick={modalHandler} disabled={loading ? true : false}>
+              Start a post
             </button>
-          </SharedActor>
-          <Description>Description</Description>
-          <SharedImage>
-            <a>
-              <img
-                src="https://i.picsum.photos/id/1006/3000/2000.jpg?hmac=x83pQQ7LW1UTo8HxBcIWuRIVeN_uCg0cG6keXvNvM8g"
-                alt="desc-img"
-              />
-            </a>
-          </SharedImage>
+          </div>
+          <div>
+            <button>
+              <box-icon name="photo-album" color="#70b5f9"></box-icon>
+              <span>Photo</span>
+            </button>
 
-          <SocialCounts>
-            <li>
-              <button>
-                <img
-                  src="https://www.userflow.nl/images/Linkedin-Like-Icon-Thumbup250.png"
-                  alt="like"
-                />
-                <img
-                  src="https://www.userflow.nl/images/Linkedin-Celebrate-Icon-ClappingHands250.png"
-                  alt="claping"
-                />
-                <span>76</span>
-              </button>
-            </li>
-            <li>
-              <a>2 comments</a>
-            </li>
-          </SocialCounts>
-          <SocialActions>
             <button>
-              <box-icon color="#0a66c2" name="like"></box-icon>
-              <span>Like</span>
+              <box-icon type="solid" name="videos" color="green"></box-icon>
+              <span>Video</span>
             </button>
+
             <button>
-              <box-icon color="#0a66c2" name="message-rounded-minus"></box-icon>
-              <span>Comment</span>
+              <box-icon
+                name="calendar-event"
+                color="orange"
+                type="solid"
+              ></box-icon>
+              <span>Event</span>
             </button>
+
             <button>
-              <box-icon color="#0a66c2" name="share"></box-icon>
-              <span>Share</span>
+              <box-icon name="file" color="red"></box-icon>
+              <span>Write article</span>
             </button>
-            <button>
-              <box-icon color="#0a66c2" name="send"></box-icon>
-              <span>Send</span>
-            </button>
-          </SocialActions>
-        </Article>
-      </Content>
-      <PostModal showModal={showModal} modalHandler={modalHandler} />
-    </Container>
+          </div>
+        </ShareBox>
+        {articles.length === 0 ? (
+          <p>
+            There are no articles{" "}
+            {loading && (
+              <img
+                className="loading"
+                src="https://i0.wp.com/css-tricks.com/wp-content/uploads/2021/08/s_2A9C470D38F43091CCD122E63014ED4503CAA7508FAF0C6806AE473C2B94B83E_1627522653545_loadinfo.gif?resize=200%2C200&ssl=1"
+                alt="loading"
+              />
+            )}
+          </p>
+        ) : (
+          <Content>
+            {loading && (
+              <img
+                className="loading"
+                src="https://i0.wp.com/css-tricks.com/wp-content/uploads/2021/08/s_2A9C470D38F43091CCD122E63014ED4503CAA7508FAF0C6806AE473C2B94B83E_1627522653545_loadinfo.gif?resize=200%2C200&ssl=1"
+                alt="loading"
+              />
+            )}
+            {articles.length > 0 &&
+              articles.map((article, index) => (
+                <Article key={index}>
+                  <SharedActor>
+                    <a>
+                      {user && user.photoURL ? (
+                        <img src={user.photoURL} alt="user" />
+                      ) : (
+                        <img src="/images/user.svg" alt="user" />
+                      )}
+                      <div>
+                        <span style={{ textTransform: "capitalize" }}>
+                          {article.actor.title}
+                        </span>
+                        <span>{article.actor.description}</span>
+                        <span>
+                          {article.actor.data.toDate().toLocaleDateString()}
+                        </span>
+                      </div>
+                    </a>
+                    <button>
+                      <box-icon name="dots-horizontal-rounded"></box-icon>
+                    </button>
+                  </SharedActor>
+                  <Description>{article.description}</Description>
+                  <SharedImage>
+                    {!article.sharedImg && article.video ? (
+                      <ReactPlayer url={article.video} width={"100%"} />
+                    ) : (
+                      <img src={article.sharedImg} alt="desc-img" />
+                    )}
+                  </SharedImage>
+
+                  <SocialCounts>
+                    <li>
+                      <button>
+                        <img
+                          src="https://www.userflow.nl/images/Linkedin-Like-Icon-Thumbup250.png"
+                          alt="like"
+                        />
+                        <img
+                          src="https://www.userflow.nl/images/Linkedin-Celebrate-Icon-ClappingHands250.png"
+                          alt="claping"
+                        />
+                        <span>0</span>
+                      </button>
+                    </li>
+                    <li>
+                      <a>{article.comment} comments</a>
+                    </li>
+                  </SocialCounts>
+                  <SocialActions>
+                    <button>
+                      <box-icon color="#0a66c2" name="like"></box-icon>
+                      <span>Like</span>
+                    </button>
+                    <button>
+                      <box-icon
+                        color="#0a66c2"
+                        name="message-rounded-minus"
+                      ></box-icon>
+                      <span>Comment</span>
+                    </button>
+                    <button>
+                      <box-icon color="#0a66c2" name="share"></box-icon>
+                      <span>Share</span>
+                    </button>
+                    <button>
+                      <box-icon color="#0a66c2" name="send"></box-icon>
+                      <span>Send</span>
+                    </button>
+                  </SocialActions>
+                </Article>
+              ))}
+          </Content>
+        )}
+
+        <PostModal showModal={showModal} modalHandler={modalHandler} />
+      </Container>
+    </>
   );
 };
 
