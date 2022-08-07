@@ -54,6 +54,7 @@ const Link = styled.div`
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.9);
   font-weight: 700;
+  text-transform: capitalize;
 `;
 
 const AddPhotoText = styled.div`

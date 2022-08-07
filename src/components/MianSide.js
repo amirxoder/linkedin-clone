@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PostModal from "./PostModal";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserAuth } from "./../redux/action/userAction";
 
 const Container = styled.div`
   grid-area: main;
@@ -22,9 +24,12 @@ const ShareBox = styled(CommonCard)`
   flex-direction: column;
   color: #958b7b;
   margin: 0 0 8px;
-  background: #fff;
+  /* background-color: ${(props) =>
+    props.disabled ? "red" : "transparent"}; */
+
   button {
     cursor: pointer;
+    background-color: ${(props) => (props.disabled ? "red" : "transparent")};
   }
 
   div {
@@ -204,8 +209,24 @@ const SocialActions = styled.div`
   }
 `;
 
+const Content = styled.div`
+  text-align: center;
+  .loading {
+    width: 30px;
+  }
+`;
+
 const MianSide = () => {
   const [showModal, setShowModal] = useState(`close`);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserAuth());
+  }, []);
+  const user = useSelector((state) => state.userState.user);
+  const loading = useSelector((state) => state.articleState.loading);
+  // console.log(loading);
 
   const modalHandler = (e) => {
     e.preventDefault();
@@ -229,10 +250,16 @@ const MianSide = () => {
   return (
     <Container>
       <ShareBox>
-        share
+        {}
         <div>
-          <img src="/images/user.svg" alt="user" />
-          <button onClick={modalHandler}>Start a post</button>
+          {user && user.photoURL ? (
+            <img src={user.photoURL} alt="user" />
+          ) : (
+            <img src="/images/user.svg" alt="user" />
+          )}
+          <button onClick={modalHandler} disabled={loading ? true : false}>
+            Start a post
+          </button>
         </div>
         <div>
           <button>
@@ -260,7 +287,15 @@ const MianSide = () => {
           </button>
         </div>
       </ShareBox>
-      <div>
+
+      <Content>
+        {loading && (
+          <img
+            className="loading"
+            src="https://i0.wp.com/css-tricks.com/wp-content/uploads/2021/08/s_2A9C470D38F43091CCD122E63014ED4503CAA7508FAF0C6806AE473C2B94B83E_1627522653545_loadinfo.gif?resize=200%2C200&ssl=1"
+            alt="loading"
+          />
+        )}
         <Article>
           <SharedActor>
             <a>
@@ -322,7 +357,7 @@ const MianSide = () => {
             </button>
           </SocialActions>
         </Article>
-      </div>
+      </Content>
       <PostModal showModal={showModal} modalHandler={modalHandler} />
     </Container>
   );

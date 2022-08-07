@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserAuth, signOutAPI } from "../redux/action/userAction";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -214,6 +215,11 @@ const Header = () => {
 
   return (
     <Container>
+      {/* {user && (
+        <Routes>
+          <Route path="/*" element={<Navigate to="/" />} />
+        </Routes>
+      )} */}
       <Content>
         <LeftContent>
           <Logo>
@@ -303,7 +309,7 @@ const Header = () => {
                 <img src="/images/down-icon.svg" alt="dropdown" />
               </span>
             </a>
-            <SignOut>
+            <SignOut onClick={() => dispatch(signOutAPI())}>
               <a>Sign out</a>
             </SignOut>
           </User>

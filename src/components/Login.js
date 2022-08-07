@@ -179,7 +179,7 @@ const Login = (props) => {
         </Hero>
 
         <Form>
-          <Google onClick={() => dispatch(signInAPI())}>
+          <Google onClick={() => dispatch(signInAPI())}>  
             <img src="/images/google.svg" alt="google" />
             Sign in width google
           </Google>

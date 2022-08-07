@@ -1,10 +1,18 @@
-import { auth, provider } from "../../firebase";
-import { SET_USER } from "./actionType";
+import { auth, provider, storage } from "../../firebase";
+import { SET_LOADING_STATUS, SET_USER } from "./actionType";
+import db from "./../../firebase";
 
 export const setUser = (payload) => {
   return {
     type: SET_USER,
     user: payload,
+  };
+};
+
+export const setLoading = (status) => {
+  return {
+    type: SET_LOADING_STATUS,
+    status: status,
   };
 };
 
@@ -38,5 +46,60 @@ export const signOutAPI = () => {
         dispatch(setUser(null));
       })
       .catch((err) => console.log(err.message));
+  };
+};
+
+export const postArticleAPI = (payload) => {
+  return (dispatch) => {
+    dispatch(setLoading(true));
+
+    if (payload.image !== "") {
+      const upload = storage
+        .ref(`images/${payload.image.name}`)
+        .put(payload.image);
+      upload.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`progress${progress}%`);
+
+          if (snapshot.state === "RUNNING") {
+            console.log(`progress${progress}%`);
+          }
+        },
+        (error) => console.error(error.code),
+        async () => {
+          const downloadURL = await upload.snapshot.ref.getDownloadURL();
+          db.collection("articles").add({
+            actor: {
+              description: payload.user.email,
+              title: payload.user.displayName,
+              data: payload.timestamp,
+              image: payload.user.photoURL,
+            },
+            video: payload.video,
+            sharedImg: downloadURL,
+            comment: 0,
+            description: payload.description,
+          });
+          dispatch(setLoading(false));
+        }
+      );
+    } else if (payload.video) {
+      db.collection("aritcles").add({
+        actor: {
+          description: payload.user.email,
+          title: payload.user.displayName,
+          data: payload.timestamp,
+          image: payload.user.photoURL,
+        },
+        video: payload.video,
+        sharedImg: "",
+        comment: 0,
+        description: payload.description,
+      });
+      dispatch(setLoading(false));
+    }
   };
 };
